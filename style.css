@@ -1,12 +1,15 @@
-body, html {
+body,
+html {
     margin: 0;
     padding: 0;
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background-color: #1a1a1a; /* Dark background per requirements */
+    background-color: #1a1a1a;
+    /* Dark background per requirements */
     color: #f0f0f0;
-    font-family: 'Hiragino Mincho ProN', 'Yu Mincho', serif; /* Healing/Cafe vibe */
+    font-family: 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+    /* Healing/Cafe vibe */
 }
 
 #overlay {
@@ -33,7 +36,8 @@ h1 {
     font-size: 2.5rem;
     margin-bottom: 0.5rem;
     text-shadow: 0 0 10px rgba(255, 236, 179, 0.5);
-    color: #e6ccb2; /* Lighter wood color */
+    color: #e6ccb2;
+    /* Lighter wood color */
 }
 
 p {
@@ -45,12 +49,13 @@ p {
 #start-btn {
     padding: 12px 30px;
     font-size: 1.2rem;
-    background-color: #8d6e63; /* Wood button */
+    background-color: #8d6e63;
+    /* Wood button */
     color: white;
     border: none;
     border-radius: 25px;
     cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     transition: transform 0.2s, background-color 0.2s;
     font-family: inherit;
 }
@@ -66,5 +71,19 @@ p {
 }
 
 canvas {
-    display: block; /* Remove scrollbars */
+    display: block;
+    /* Remove scrollbars */
+}
+
+#youtube-player {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    /* Behind everything */
+    opacity: 0.3;
+    /* Faintly visible or 0 for audio only */
+    pointer-events: none;
 }

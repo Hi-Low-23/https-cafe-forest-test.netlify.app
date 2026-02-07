@@ -1,19 +1,19 @@
 // Matter.js module aliases
 const Engine = Matter.Engine,
-      Render = Matter.Render,
-      Runner = Matter.Runner,
-      Bodies = Matter.Bodies,
-      Composite = Matter.Composite,
-      Events = Matter.Events,
-      Mouse = Matter.Mouse,
-      MouseConstraint = Matter.MouseConstraint;
+    Render = Matter.Render,
+    Runner = Matter.Runner,
+    Bodies = Matter.Bodies,
+    Composite = Matter.Composite,
+    Events = Matter.Events,
+    Mouse = Matter.Mouse,
+    MouseConstraint = Matter.MouseConstraint;
 
 // Create engine
 const engine = Engine.create();
 const world = engine.world;
 
 // Disable default gravity initially (or set very low) so things float slowly
-engine.gravity.y = 0; 
+engine.gravity.y = 0;
 engine.gravity.x = 0;
 
 // Create renderer
@@ -40,12 +40,12 @@ function updateWalls() {
     const width = window.innerWidth;
     const height = window.innerHeight;
     const thickness = 100;
-    
+
     walls = [
-        Bodies.rectangle(width/2, -thickness/2, width, thickness, wallOptions), // Top
-        Bodies.rectangle(width/2, height + thickness/2, width, thickness, wallOptions), // Bottom
-        Bodies.rectangle(width + thickness/2, height/2, thickness, height, wallOptions), // Right
-        Bodies.rectangle(-thickness/2, height/2, thickness, height, wallOptions) // Left
+        Bodies.rectangle(width / 2, -thickness / 2, width, thickness, wallOptions), // Top
+        Bodies.rectangle(width / 2, height + thickness / 2, width, thickness, wallOptions), // Bottom
+        Bodies.rectangle(width + thickness / 2, height / 2, thickness, height, wallOptions), // Right
+        Bodies.rectangle(-thickness / 2, height / 2, thickness, height, wallOptions) // Left
     ];
     Composite.add(world, walls);
 }
@@ -69,44 +69,44 @@ function createMenuButton(x, y, text) {
     // Canvas for texture generation (simple wood texture)
     const width = 200;
     const height = 60;
-    
+
     // We will rely on render.text features if we use a plugin, but Matter.js default render doesn't support text well.
     // So we'll use a trick: `render.sprite.texture` needs an image URL.
     // Let's create a canvas, draw the button with text, convert to data URL.
-    
+
     const canvas = document.createElement('canvas');
     canvas.width = width;
     canvas.height = height;
     const ctx = canvas.getContext('2d');
-    
+
     // Draw wood background
     ctx.fillStyle = '#8D6E63'; // Base brown
     ctx.fillRect(0, 0, width, height);
-    
+
     // Add grain logic (simple lines)
     ctx.strokeStyle = '#6D4C41';
     ctx.lineWidth = 2;
-    for(let i=0; i<5; i++) {
+    for (let i = 0; i < 5; i++) {
         ctx.beginPath();
         ctx.moveTo(0, Math.random() * height);
-        ctx.bezierCurveTo(width/3, Math.random() * height, 2*width/3, Math.random() * height, width, Math.random() * height);
+        ctx.bezierCurveTo(width / 3, Math.random() * height, 2 * width / 3, Math.random() * height, width, Math.random() * height);
         ctx.stroke();
     }
-    
+
     // Add border/bevel
     ctx.strokeStyle = '#5D4037';
     ctx.lineWidth = 4;
     ctx.strokeRect(0, 0, width, height);
-    
+
     // Add Text
     ctx.fillStyle = '#FFF8E1';
     ctx.font = '24px "Hiragino Mincho ProN", serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(text, width/2, height/2);
-    
+    ctx.fillText(text, width / 2, height / 2);
+
     const texture = canvas.toDataURL();
-    
+
     const body = Bodies.rectangle(x, y, width, height, {
         restitution: 0.6, // Bounciness
         frictionAir: 0.05, // Floatiness (higher = thicker fluid)
@@ -142,11 +142,48 @@ const mouseConstraint = MouseConstraint.create(engine, {
 Composite.add(world, mouseConstraint);
 render.mouse = mouse; // Keep the mouse in sync with rendering
 
+// YouTube API Logic
+let player;
+// Load the IFrame Player API code asynchronously.
+const tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+const firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+function onYouTubeIframeAPIReady() {
+    player = new YT.Player('youtube-player', {
+        height: '100%',
+        width: '100%',
+        videoId: 'jv-1iO6k0hU', // Healing Cafe Jazz BGM (Example ID)
+        playerVars: {
+            'playsinline': 1,
+            'controls': 0,
+            'loop': 1,
+            'playlist': 'jv-1iO6k0hU' // Required for loop
+        },
+        events: {
+            'onReady': onPlayerReady
+        }
+    });
+}
+
+function onPlayerReady(event) {
+    // Player is ready, waiting for user interaction to play
+    console.log("YouTube Player Ready");
+}
+
+
 // Device Orientation
 const startBtn = document.getElementById('start-btn');
 const overlay = document.getElementById('overlay');
 
 startBtn.addEventListener('click', () => {
+    // Play Music
+    if (player && player.playVideo) {
+        player.playVideo();
+        // Fade in volume if possible, or just play
+    }
+
     // Request permission for iOS 13+
     if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
         DeviceOrientationEvent.requestPermission()
@@ -168,16 +205,16 @@ startBtn.addEventListener('click', () => {
 
 function handleOrientation(event) {
     const { beta, gamma } = event; // beta: front-back tilt, gamma: left-right tilt
-    
+
     // Map tilt to gravity
     // Default gravity is usually 1. We want gentle drifting.
     // gamma (-90 to 90) -> gravity.x
     // beta (-180 to 180) -> gravity.y
-    
+
     // Clamp values to avoid extreme forces
     const x = Math.min(Math.max(gamma / 45, -1), 1);
     const y = Math.min(Math.max(beta / 45, -1), 1);
-    
+
     engine.gravity.x = x * 0.5; // Scale down for "floating" feel
     engine.gravity.y = y * 0.5;
 }
@@ -188,12 +225,12 @@ document.addEventListener('mousemove', (e) => {
     // Only if not using device orientation (we can't easily detect usage, but this is fine for desktop testing)
     // If user is on mobile with touch, this might conflict, but usually separate.
     // Let's make it subtle.
-    
+
     // const x = (e.clientX / window.innerWidth - 0.5) * 2; // -1 to 1
     // const y = (e.clientY / window.innerHeight - 0.5) * 2;
     // engine.gravity.x = x * 0.5;
     // engine.gravity.y = y * 0.5;
-    
+
     // Commented out to prioritize "pure" mouse dragging if on desktop, 
     // or uncomment for "mouse defines gravity" testing.
     // For now, let's leave it commented to let users drag buttons around.
