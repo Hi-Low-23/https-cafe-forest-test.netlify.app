@@ -142,48 +142,11 @@ const mouseConstraint = MouseConstraint.create(engine, {
 Composite.add(world, mouseConstraint);
 render.mouse = mouse; // Keep the mouse in sync with rendering
 
-// YouTube API Logic
-let player;
-// Load the IFrame Player API code asynchronously.
-const tag = document.createElement('script');
-tag.src = "https://www.youtube.com/iframe_api";
-const firstScriptTag = document.getElementsByTagName('script')[0];
-firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-function onYouTubeIframeAPIReady() {
-    player = new YT.Player('youtube-player', {
-        height: '100%',
-        width: '100%',
-        videoId: 'jv-1iO6k0hU', // Healing Cafe Jazz BGM (Example ID)
-        playerVars: {
-            'playsinline': 1,
-            'controls': 0,
-            'loop': 1,
-            'playlist': 'jv-1iO6k0hU' // Required for loop
-        },
-        events: {
-            'onReady': onPlayerReady
-        }
-    });
-}
-
-function onPlayerReady(event) {
-    // Player is ready, waiting for user interaction to play
-    console.log("YouTube Player Ready");
-}
-
-
 // Device Orientation
 const startBtn = document.getElementById('start-btn');
 const overlay = document.getElementById('overlay');
 
 startBtn.addEventListener('click', () => {
-    // Play Music
-    if (player && player.playVideo) {
-        player.playVideo();
-        // Fade in volume if possible, or just play
-    }
-
     // Request permission for iOS 13+
     if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
         DeviceOrientationEvent.requestPermission()
