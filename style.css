@@ -1,0 +1,70 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: #1a1a1a; /* Dark background per requirements */
+    color: #f0f0f0;
+    font-family: 'Hiragino Mincho ProN', 'Yu Mincho', serif; /* Healing/Cafe vibe */
+}
+
+#overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    transition: opacity 1s ease;
+}
+
+#overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 10px rgba(255, 236, 179, 0.5);
+    color: #e6ccb2; /* Lighter wood color */
+}
+
+p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: #b08d74;
+}
+
+#start-btn {
+    padding: 12px 30px;
+    font-size: 1.2rem;
+    background-color: #8d6e63; /* Wood button */
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    transition: transform 0.2s, background-color 0.2s;
+    font-family: inherit;
+}
+
+#start-btn:active {
+    transform: scale(0.95);
+    background-color: #6d4c41;
+}
+
+#world {
+    width: 100%;
+    height: 100%;
+}
+
+canvas {
+    display: block; /* Remove scrollbars */
+}
